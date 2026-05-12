@@ -1,0 +1,64 @@
+2026-05-12 13:29:34,105: Logging to C:\Users\Effer\Arctic-River-Temp-Predictions-main\Arctic-River-Temp-Predictions-main\runs\Final_20260211_1205_132934\output.log initialized.
+2026-05-12 13:29:34,105: ### Folder structure created at C:\Users\Effer\Arctic-River-Temp-Predictions-main\Arctic-River-Temp-Predictions-main\runs\Final_20260211_1205_132934
+2026-05-12 13:29:34,105: ### Run configurations for Final_20260211
+2026-05-12 13:29:34,105: experiment_name: Final_20260211
+2026-05-12 13:29:34,105: train_basin_file: Data\1_test\train.txt
+2026-05-12 13:29:34,105: validation_basin_file: Data\1_test\train_val.txt
+2026-05-12 13:29:34,106: test_basin_file: Data\1_test\test.txt
+2026-05-12 13:29:34,106: train_start_date: 2002-01-01 00:00:00
+2026-05-12 13:29:34,106: train_end_date: 2022-08-01 00:00:00
+2026-05-12 13:29:34,106: validation_start_date: 2002-01-01 00:00:00
+2026-05-12 13:29:34,106: validation_end_date: 2022-08-01 00:00:00
+2026-05-12 13:29:34,106: test_start_date: 2002-01-01 00:00:00
+2026-05-12 13:29:34,106: test_end_date: 2022-09-01 00:00:00
+2026-05-12 13:29:34,107: seed: 42
+2026-05-12 13:29:34,107: device: cuda:0
+2026-05-12 13:29:34,107: validate_every: 0
+2026-05-12 13:29:34,107: validate_n_random_basins: 30
+2026-05-12 13:29:34,107: metrics: ['NSE', 'RMSE', 'KGE']
+2026-05-12 13:29:34,107: model: cudalstm
+2026-05-12 13:29:34,107: head: regression
+2026-05-12 13:29:34,107: output_activation: linear
+2026-05-12 13:29:34,107: hidden_size: 300
+2026-05-12 13:29:34,107: initial_forget_bias: 0
+2026-05-12 13:29:34,107: output_dropout: 0.3
+2026-05-12 13:29:34,107: optimizer: Adam
+2026-05-12 13:29:34,108: loss: RMSE
+2026-05-12 13:29:34,108: allow_subsequent_nan_losses: 80
+2026-05-12 13:29:34,108: learning_rate: 0.000316
+2026-05-12 13:29:34,108: batch_size: 40
+2026-05-12 13:29:34,108: epochs: 8
+2026-05-12 13:29:34,108: clip_gradient_norm: 1
+2026-05-12 13:29:34,108: predict_last_n: 1
+2026-05-12 13:29:34,108: seq_length: 365
+2026-05-12 13:29:34,108: num_workers: 8
+2026-05-12 13:29:34,108: log_interval: 1
+2026-05-12 13:29:34,108: log_tensorboard: True
+2026-05-12 13:29:34,108: log_n_figures: 1
+2026-05-12 13:29:34,108: save_weights_every: 1
+2026-05-12 13:29:34,108: save_validation_results: True
+2026-05-12 13:29:34,109: dataset: generic
+2026-05-12 13:29:34,109: data_dir: Data\1_test
+2026-05-12 13:29:34,109: forcings: ['maurer', 'daymet', 'nldas']
+2026-05-12 13:29:34,109: dynamic_inputs: ['snow_depth_water_equivalent_mean', 'surface_net_solar_radiation_mean', 'surface_net_thermal_radiation_mean', 'temperature_2m_mean', 'u_component_of_wind_10m_mean', 'v_component_of_wind_10m_mean', 'volumetric_soil_water_layer_1_mean', 'soil_temperature_level_1_mean', 'total_precipitation_sum', 'potential_evaporation_sum', 'surface_runoff_sum', 'sub_surface_runoff_sum']
+2026-05-12 13:29:34,109: target_variables: ['mean_temp_c']
+2026-05-12 13:29:34,109: static_attributes: ['topo_GM90_topo_idx', 'ha_ppd_pk_uav', 'ha_for_pc_use', 'ha_snd_pc_uav', 'ice_PastickAK_probability', 'norm_aet', 'ice_GLIMS_glacier', 'ha_cmi_ix_uyr', 'norm_dis', 'ha_ele_mt_uav', 'ha_snw_pc_uyr', 'latitude', 'ha_tmp_dc_syr', 'ha_cly_pc_uav', 'norm_inundation', 'area_km2', 'ha_wet_pc_ug1', 'ha_nli_ix_uav', 'norm_riverarea', 'ha_pnv_cl_smj', 'ha_lit_cl_smj', 'soil_SG250_soc_15_30', 'soil_Pelletier_sed_thickness', 'ha_lka_pc_sse', 'ha_tmp_dc_s06', 'ha_tmp_dc_s07', 'ha_tmp_dc_s08', 'ha_tmp_dc_s09']
+2026-05-12 13:29:34,109: number_of_basins: 100
+2026-05-12 13:29:34,109: run_dir: C:\Users\Effer\Arctic-River-Temp-Predictions-main\Arctic-River-Temp-Predictions-main\runs\Final_20260211_1205_132934
+2026-05-12 13:29:34,109: train_dir: C:\Users\Effer\Arctic-River-Temp-Predictions-main\Arctic-River-Temp-Predictions-main\runs\Final_20260211_1205_132934\train_data
+2026-05-12 13:29:34,109: img_log_dir: C:\Users\Effer\Arctic-River-Temp-Predictions-main\Arctic-River-Temp-Predictions-main\runs\Final_20260211_1205_132934\img_log
+2026-05-12 13:29:34,181: ### Device cuda:0 will be used for training
+2026-05-12 13:29:34,272: Loading basin data into xarray data set.
+2026-05-12 13:31:58,018: Create lookup table and convert to pytorch tensor
+2026-05-12 13:34:19,464: Epoch 1 average loss: avg_loss: 0.12923, avg_total_loss: 0.12923
+2026-05-12 13:36:26,002: Epoch 2 average loss: avg_loss: 0.09850, avg_total_loss: 0.09850
+2026-05-12 13:38:32,440: Epoch 3 average loss: avg_loss: 0.09151, avg_total_loss: 0.09151
+2026-05-12 13:40:46,301: Epoch 4 average loss: avg_loss: 0.08707, avg_total_loss: 0.08707
+2026-05-12 13:43:14,094: Epoch 5 average loss: avg_loss: 0.08372, avg_total_loss: 0.08372
+2026-05-12 13:45:42,626: Epoch 6 average loss: avg_loss: 0.08092, avg_total_loss: 0.08092
+2026-05-12 13:48:19,442: Epoch 7 average loss: avg_loss: 0.07863, avg_total_loss: 0.07863
+2026-05-12 13:50:52,846: Epoch 8 average loss: avg_loss: 0.07635, avg_total_loss: 0.07635
+2026-05-12 13:58:56,936: Logging to runs\Final_20260211_1205_132934\output.log initialized.
+2026-05-12 13:58:57,369: Using the model weights from runs\Final_20260211_1205_132934\model_epoch008.pt
+2026-05-12 14:02:27,469: Stored metrics at runs\Final_20260211_1205_132934\test\model_epoch008\test_metrics.csv
+2026-05-12 14:02:27,502: Stored results at runs\Final_20260211_1205_132934\test\model_epoch008\test_results.p
