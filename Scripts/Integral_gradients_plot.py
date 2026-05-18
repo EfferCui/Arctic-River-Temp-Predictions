@@ -41,18 +41,26 @@ n3_r = n3[ ::-1,:]
 n4_r = n4[ ::-1,:]
 
 
-fig, axs = plt.subplots(3, 4, figsize=(15, 8), facecolor = 'w', edgecolor = 'k')
-fig.subplots_adjust(hspace = .5, wspace =.5)
-l=0
-for ax in axs.flatten():
+selected_forcings = [3, 7, 1, 2, 6, 0]
+selected_labels = ["Air Temperature", "Soil Temperature", "Solar Radiation",
+                   "Thermal Radiation", "Soil Water Content", "SWE"]
 
-    ax.plot(range(365), n2_r[:,l], color=colors[l], linewidth=2.5, linestyle='-', marker='s', markersize=4)
-    
-    ax.fill_between(range(365),n4_r[:,l], n3_r[:,l], interpolate=False, color=colors[l], alpha=0.5,linewidth=0)
-    ax.set_xlim([0,15])
-    ax.set_title(varsl[l])
-    ax.axhline(y=0, color='k', linestyle='--')
-    l+=1
+fig, ax = plt.subplots(1, 1, figsize=(7, 5), facecolor='w', edgecolor='k')
+for l, label in zip(selected_forcings, selected_labels):
+    ax.plot(range(365), n2_r[:, l], color=colors[l], linewidth=2.5,
+            linestyle='-', marker='s', markersize=4, label=label)
+    ax.fill_between(range(365), n4_r[:, l], n3_r[:, l],
+                    interpolate=False, color=colors[l], alpha=0.18, linewidth=0)
+
+ax.set_xlim([0, 15])
+ax.axhline(y=0, color='k', linestyle='--')
+ax.set_xlabel("Days before present (d)", fontsize=15)
+ax.set_ylabel("IG", fontsize=15)
+ax.legend(frameon=False, fontsize=10)
+for axis in ['top','bottom','left','right']:
+    ax.spines[axis].set_linewidth(1)
+fig.tight_layout()
+fig.savefig('./runs/Final_20260211_1205_132934/feature_lag_comparison.png', dpi=300, bbox_inches='tight')
 #plt.savefig(r"D:\ShuyuChang\AKTemp\Figrues\fig71.png", dpi=300)  
 
 

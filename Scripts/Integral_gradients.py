@@ -59,7 +59,7 @@ wshds=['11', '127', '128', '15', '167', '169', '170', '19', '210', '211', '213',
        '244', '246', '253', '257', '258', '272', '275', '281', '282', '297', '3', '302', '308', '31', '318', '322', '325', '48', \
            '5', '50', '54', '61', '67', '8']
     
-random.seed(10)   
+random.seed(10)
 # generate datetime series from '2023-01-01' to '2023-12-31' with daily frequency
 date = pd.date_range(start='2002-01-01', end='2022-09-01', freq='D')
 date=pd.DataFrame(date)
@@ -74,12 +74,18 @@ for i in range(100): #20 time slots
     print(idx)   
     idx_l.append(idx)
     
-eg_arr = np.zeros([365,42,len(idx_l),12])
+seq_length = cudalstm_config.seq_length
+n_features = len(cudalstm_config.dynamic_inputs)
+
+# Joint-path IG keeps per-variable attributions, but moves all variables
+# together from the normalized zero baseline to the actual normalized input.
+eg_arr = np.zeros([seq_length, len(wshds), len(idx_l), n_features])
+eg_group_arr = np.zeros([seq_length, len(wshds), len(idx_l)])
+eg_group_abs_arr = np.zeros([seq_length, len(wshds), len(idx_l)])
 
 scaler = load_scaler(run_dir)
     
-for j in range(42):  #10 watersheds 
-    wshd=wshds[j]
+for j, wshd in enumerate(wshds):
     print(wshd)
     
     # load the dataset
@@ -91,38 +97,37 @@ for j in range(42):  #10 watersheds
         idx=idx_l[h]
         sample = samples[idx]
         feature_keys = list(sample['x_d'].keys())
-        x = torch.cat([sample['x_d'][k] for k in feature_keys], dim=-1).to('cpu').numpy().reshape(365,12)
+        x_tensor = torch.cat([sample['x_d'][k] for k in feature_keys], dim=-1).to(device)
+        x = x_tensor.to('cpu').numpy().reshape(seq_length, n_features)
     
         n_iter =100 # higher number takes longer but produces better results
-        alpha = torch.linspace(0, 1, n_iter, device=device).view(n_iter, 1)
-        #alpha = alpha.view(n_iter, *tuple(np.ones(baseline[0].ndim, dtype='int')))
+        alpha = torch.linspace(0, 1, n_iter, device=device).view(n_iter, 1, 1)
         
-        for l in range(12):
-            
-            scaled_x = torch.cat([sample['x_d'][k] for k in feature_keys], dim=-1).to(device)
-            scaled_x = scaled_x.expand(n_iter, -1, -1).clone()
-            scaled_x[:,:,l] = scaled_x[:,:,l] * alpha
-            scaled_x.requires_grad_(True)
+        scaled_x = x_tensor.expand(n_iter, -1, -1).clone()
+        scaled_x = scaled_x * alpha
+        scaled_x.requires_grad_(True)
 
-            scaled_x_d = {
-                k: scaled_x[:, :, m:m+1]
-                for m, k in enumerate(feature_keys)
-            }
+        scaled_x_d = {
+            k: scaled_x[:, :, m:m+1]
+            for m, k in enumerate(feature_keys)
+        }
 
-            s = {
-                'x_d': scaled_x_d,
-                'y': sample['y'],
-                'date': sample['date'],
-                'x_s': sample['x_s'].to(device).expand(n_iter, -1)
-            }
+        s = {
+            'x_d': scaled_x_d,
+            'y': sample['y'],
+            'date': sample['date'],
+            'x_s': sample['x_s'].to(device).expand(n_iter, -1)
+        }
 
-            part_y_hat = cuda_lstm(s)['y_hat']
+        part_y_hat = cuda_lstm(s)['y_hat']
 
-            t0 = torch.autograd.grad(part_y_hat[:, -1, 0].sum(), scaled_x)
-            attribution = (t0[0])[:, :, l].to('cpu').numpy().T
-                
-            
-            integrated = attribution.sum(axis=1) / n_iter
-            eg=np.multiply(integrated ,x[:,l])
-            eg_arr[:,j,h,l]=eg#.reshape(365,1,1,1)
+        grad = torch.autograd.grad(part_y_hat[:, -1, 0].sum(), scaled_x)[0]
+        mean_grad = grad.mean(dim=0).to('cpu').numpy()
+        eg_by_variable = mean_grad * x
+
+        eg_arr[:, j, h, :] = eg_by_variable
+        eg_group_arr[:, j, h] = eg_by_variable.sum(axis=1)
+        eg_group_abs_arr[:, j, h] = np.abs(eg_by_variable).sum(axis=1)
 np.save('./runs/Final_20260211_1205_132934/ig.npy', eg_arr)
+np.save('./runs/Final_20260211_1205_132934/ig_group.npy', eg_group_arr)
+np.save('./runs/Final_20260211_1205_132934/ig_group_abs.npy', eg_group_abs_arr)
